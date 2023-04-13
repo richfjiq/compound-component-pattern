@@ -1,4 +1,9 @@
-import ProductCard from '../components/ProductCard';
+import {
+  ProductButtons,
+  ProductCard,
+  ProductImage,
+  ProductTitle,
+} from '../components';
 
 const ShoppingPage = () => {
   const product = {
@@ -18,7 +23,17 @@ const ShoppingPage = () => {
           justifyContent: 'center',
         }}
       >
-        <ProductCard product={product} />
+        <ProductCard product={product}>
+          <ProductCard.Image />
+          <ProductCard.Title />
+          <ProductCard.Buttons />
+        </ProductCard>
+
+        <ProductCard product={product}>
+          <ProductImage />
+          <ProductTitle />
+          <ProductButtons />
+        </ProductCard>
       </div>
     </div>
   );
