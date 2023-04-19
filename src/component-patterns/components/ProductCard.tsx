@@ -1,4 +1,4 @@
-import { CSSProperties, ReactElement, createContext } from 'react';
+import { CSSProperties, createContext, useCallback } from 'react';
 
 import styles from '../styles/styles.module.css';
 import { useProducts } from '../hooks/useProduct';
@@ -6,15 +6,19 @@ import {
   ProductContextProps,
   Product,
   onChangeArgs,
+  InitialValues,
+  ProductCartHandlers,
 } from '../interfaces/interfaces';
 
 export interface Props {
   product: Product;
-  children?: ReactElement | ReactElement[];
+  // children?: ReactElement | ReactElement[];
+  children: (args: ProductCartHandlers) => JSX.Element;
   className?: string;
   style?: CSSProperties;
   onChange?: (args: onChangeArgs) => void;
   value?: number;
+  initialValues?: InitialValues;
 }
 
 export const ProductContext = createContext({} as ProductContextProps);
@@ -27,8 +31,15 @@ export const ProductCard = ({
   style,
   onChange,
   value,
+  initialValues,
 }: Props) => {
-  const { counter, increaseBy } = useProducts({ onChange, product, value });
+  const { counter, maxCount, isMaxCountReached, increaseBy, reset } =
+    useProducts({
+      onChange,
+      product,
+      value,
+      initialValues,
+    });
 
   return (
     <Provider
@@ -36,10 +47,18 @@ export const ProductCard = ({
         counter,
         increaseBy,
         product,
+        maxCount,
       }}
     >
       <div className={`${styles.productCard} ${className}`} style={style}>
-        {children}
+        {children({
+          count: counter,
+          isMaxCountReached,
+          maxCount: initialValues?.maxCount,
+          product,
+          increaseBy,
+          reset,
+        })}
       </div>
     </Provider>
   );
